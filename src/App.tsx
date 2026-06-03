@@ -28,6 +28,8 @@ function App() {
 
   const [successMessage, setSuccessMessage] = useState("");
 
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
   const [form, setForm] = useState<Booking>({
     name: "",
     email: "",
@@ -53,8 +55,22 @@ function App() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    setBookings([...bookings, form]);
-    setSuccessMessage("Booking submitted successfully.");
+    if (editingIndex !== null) {
+      const updatedBookings = bookings.map((booking, index) => {
+        if (index === editingIndex) {
+          return form;
+        }
+
+        return booking;
+      });
+
+      setBookings(updatedBookings);
+      setEditingIndex(null);
+      setSuccessMessage("Booking updated successfully.");
+    } else {
+      setBookings([...bookings, form]);
+      setSuccessMessage("Booking submitted successfully.");
+    }
 
     setForm({
       name: "",
@@ -68,7 +84,7 @@ function App() {
 
   function deleteBooking(indexToDelete: number) {
     setBookings(bookings.filter((_, index) => index !== indexToDelete));
-}
+  }
 
   return (
     <main className="page">
@@ -136,7 +152,30 @@ function App() {
               onChange={handleChange}
             />
 
-            <button type="submit">Submit Booking</button>
+            <button type="submit">
+              {editingIndex !== null ? "Update Booking" : "Submit Booking"}
+            </button>
+
+            {editingIndex !== null && (
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingIndex(null);
+
+                  setForm({
+                    name: "",
+                    email: "",
+                    phone: "",
+                    service: "",
+                    date: "",
+                    time: "",
+                  });
+                }}
+              >
+                Cancel Edit
+              </button>
+            )}
+            
             {successMessage && <p className="success">{successMessage}</p>}
           </form>
         </section>
@@ -155,6 +194,17 @@ function App() {
               <p>
                 {booking.date} at {booking.time}
               </p>
+
+              <button
+                onClick={() => {
+                  setForm(booking);
+                  setEditingIndex(index);
+                  setShowBooking(true);
+                }}
+              >
+                Edit
+              </button>
+
               <button onClick={() => deleteBooking(index)}>Delete</button>
             </div>
           ))}
