@@ -30,6 +30,8 @@ function App() {
 
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   const [form, setForm] = useState<Booking>({
     name: "",
     email: "",
@@ -85,6 +87,10 @@ function App() {
   function deleteBooking(indexToDelete: number) {
     setBookings(bookings.filter((_, index) => index !== indexToDelete));
   }
+
+  const filteredBookings = bookings.filter((booking) =>
+    booking.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <main className="page">
@@ -175,7 +181,7 @@ function App() {
                 Cancel Edit
               </button>
             )}
-            
+
             {successMessage && <p className="success">{successMessage}</p>}
           </form>
         </section>
@@ -185,7 +191,13 @@ function App() {
         <section className="booking-list">
           <h2>Saved Bookings</h2>
 
-          {bookings.map((booking, index) => (
+          <input
+            placeholder="Search by customer name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
+          {filteredBookings.map((booking, index) => (
             <div className="booking-card" key={index}>
               <h3>{booking.service}</h3>
               <p>{booking.name}</p>
