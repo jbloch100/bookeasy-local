@@ -33,6 +33,8 @@ function App() {
 
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [serviceFilter, setServiceFilter] = useState("All");
+
   const [form, setForm] = useState<Booking>({
     id: 0,
     name: "",
@@ -98,9 +100,16 @@ function App() {
     );
   }
 
-  const filteredBookings = bookings.filter((booking) =>
-    booking.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredBookings = bookings.filter((booking) => {
+    const matchesSearch = booking.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    const matchesService =
+      serviceFilter === "All" || booking.service === serviceFilter;
+
+    return matchesSearch && matchesService;
+  });
 
   const totalBookings = bookings.length;
 
@@ -243,6 +252,16 @@ function App() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+
+          <select
+            value={serviceFilter}
+            onChange={(e) => setServiceFilter(e.target.value)}
+          >
+            <option value="All">All Services</option>
+            <option value="Haircut">Haircut</option>
+            <option value="Cleaning">Cleaning</option>
+            <option value="Tutoring">Tutoring</option>
+          </select>
 
           {filteredBookings.map((booking, index) => (
             <div className="booking-card" key={index}>
