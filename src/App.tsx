@@ -102,6 +102,20 @@ function App() {
     booking.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const totalBookings = bookings.length;
+
+  const haircutBookings = bookings.filter(
+    (booking) => booking.service === "Haircut"
+  ).length;
+
+  const cleaningBookings = bookings.filter(
+    (booking) => booking.service === "Cleaning"
+  ).length;
+
+  const tutoringBookings = bookings.filter(
+    (booking) => booking.service === "Tutoring"
+  ).length;
+
   return (
     <main className="page">
       <section className="hero">
@@ -197,6 +211,28 @@ function App() {
           </form>
         </section>
       )}
+
+      <section className="stats">
+        <div className="stat-card">
+          <h3>Total Bookings</h3>
+          <p>{totalBookings}</p>
+        </div>
+
+        <div className="stat-card">
+          <h3>Haircuts</h3>
+          <p>{haircutBookings}</p>
+        </div>
+
+        <div className="stat-card">
+          <h3>Cleaning</h3>
+          <p>{cleaningBookings}</p>
+        </div>
+
+        <div className="stat-card">
+          <h3>Tutoring</h3>
+          <p>{tutoringBookings}</p>
+        </div>
+      </section>
 
       {bookings.length > 0 && (
         <section className="booking-list">
