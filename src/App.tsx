@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 
 type Booking = {
+  id: number;
   name: string;
   email: string;
   phone: string;
@@ -33,6 +34,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [form, setForm] = useState<Booking>({
+    id: 0,
     name: "",
     email: "",
     phone: "",
@@ -58,8 +60,8 @@ function App() {
     e.preventDefault();
 
     if (editingIndex !== null) {
-      const updatedBookings = bookings.map((booking, index) => {
-        if (index === editingIndex) {
+      const updatedBookings = bookings.map((booking) => {
+        if (booking.id === editingIndex) {
           return form;
         }
 
@@ -70,11 +72,17 @@ function App() {
       setEditingIndex(null);
       setSuccessMessage("Booking updated successfully.");
     } else {
-      setBookings([...bookings, form]);
+      const newBooking = {
+        ...form,
+        id: Date.now(),
+      };
+
+      setBookings([...bookings, newBooking]);
       setSuccessMessage("Booking submitted successfully.");
     }
 
     setForm({
+      id: 0,
       name: "",
       email: "",
       phone: "",
@@ -84,8 +92,10 @@ function App() {
     });
   }
 
-  function deleteBooking(indexToDelete: number) {
-    setBookings(bookings.filter((_, index) => index !== indexToDelete));
+  function deleteBooking(idToDelete: number) {
+    setBookings(
+      bookings.filter((booking) => booking.id !== idToDelete)
+    );
   }
 
   const filteredBookings = bookings.filter((booking) =>
@@ -169,6 +179,7 @@ function App() {
                   setEditingIndex(null);
 
                   setForm({
+                    id: 0,
                     name: "",
                     email: "",
                     phone: "",
@@ -210,14 +221,14 @@ function App() {
               <button
                 onClick={() => {
                   setForm(booking);
-                  setEditingIndex(index);
+                  setEditingIndex(booking.id);
                   setShowBooking(true);
                 }}
               >
                 Edit
               </button>
 
-              <button onClick={() => deleteBooking(index)}>Delete</button>
+              <button onClick={() => deleteBooking(booking.id)}>Delete</button>
             </div>
           ))}
         </section>
