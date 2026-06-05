@@ -35,6 +35,8 @@ function App() {
 
   const [serviceFilter, setServiceFilter] = useState("All");
 
+  const [sortOrder, setSortOrder] = useState("newest");
+
   const [form, setForm] = useState<Booking>({
     id: 0,
     name: "",
@@ -109,6 +111,17 @@ function App() {
       serviceFilter === "All" || booking.service === serviceFilter;
 
     return matchesSearch && matchesService;
+  });
+
+  const sortedBookings = [...filteredBookings].sort((a, b) => {
+    const dateA = new Date(`${a.date}T${a.time}`).getTime();
+    const dateB = new Date(`${b.date}T${b.time}`).getTime();
+
+    if (sortOrder === "newest") {
+      return dateB - dateA;
+    }
+
+    return dateA - dateB;
   });
 
   const totalBookings = bookings.length;
@@ -263,8 +276,16 @@ function App() {
             <option value="Tutoring">Tutoring</option>
           </select>
 
-          {filteredBookings.map((booking, index) => (
-            <div className="booking-card" key={index}>
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+          >
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+          </select>
+
+          {sortedBookings.map((booking) => (
+            <div className="booking-card" key={booking.id}>
               <h3>{booking.service}</h3>
               <p>{booking.name}</p>
               <p>{booking.email}</p>
