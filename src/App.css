@@ -148,3 +148,9 @@ button {
   font-size: 24px;
   font-weight: bold;
 }
+
+.error {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+}

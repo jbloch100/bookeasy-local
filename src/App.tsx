@@ -29,6 +29,8 @@ function App() {
 
   const [successMessage, setSuccessMessage] = useState("");
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -62,6 +64,14 @@ function App() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (!form.name || !form.email || !form.service || !form.date || !form.time) {
+      setErrorMessage("Please fill in all required fields.");
+      setSuccessMessage("");
+      return;
+    }
+
+    setErrorMessage("");
 
     if (editingIndex !== null) {
       const updatedBookings = bookings.map((booking) => {
@@ -230,6 +240,8 @@ function App() {
             )}
 
             {successMessage && <p className="success">{successMessage}</p>}
+
+            {errorMessage && <p className="error">{errorMessage}</p>}
           </form>
         </section>
       )}
